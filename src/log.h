@@ -10,7 +10,9 @@ enum LogLevel {
 	L_NONE
 };
 
-#define LOGFILE_NAME "logs.txt"
+#ifndef LOGFILE_NAME
+# define LOGFILE_NAME "logs.txt"
+#endif
 
 #ifndef NO_FUNC
 	#define LOG(LVL, MSG) __log(LVL, __FILE__, __func__, __LINE__, MSG)

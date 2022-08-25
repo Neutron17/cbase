@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "log.h"
 #include "lt.h"
@@ -13,7 +14,7 @@
 
 int main(int argc, char *argv[]) {
 	init();
-	puts("Hello World");
+	LOG(L_INFO, "Hello World");
 	cleanUp(E_SUCCESS);
 }
 
