@@ -60,6 +60,7 @@ char *itoa(int number, char *arr, int base) {
 	return arr;
 }
 
+// WARNING: Linux only
 const char *pidname(int pid) {
 	char *name = calloc(1024, sizeof(char));
 	if(!name)

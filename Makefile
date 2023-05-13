@@ -1,6 +1,6 @@
 CC = cc
 
-PNAME = c
+PNAME = base
 
 SRC  = $(shell find src -name "*.c")
 OBJ  = $(SRC:.c=.o)

@@ -13,7 +13,7 @@ struct Arg getArgs(int argc, char *argv[]) {
 		static struct option long_options[] = {
 			/* Use flags like so:
 			{"verbose",	no_argument,	&verbose_flag, 'V'}*/
-			/* Argument styles: no_argument, required_argument, optional_argument */
+			/* Argument styles: no_argument, required_argument, Option_argument */
 			{"version", no_argument,	0,	'v'},
 			{"help",	no_argument,	0,	'h'},
 
@@ -25,7 +25,7 @@ struct Arg getArgs(int argc, char *argv[]) {
 		/* Argument parameters:
 			no_argument: " "
 			required_argument: ":"
-			optional_argument: "::" */
+			Option_argument: "::" */
 
 		choice = getopt_long(argc, argv, "vh",
 					long_options, &option_index);
