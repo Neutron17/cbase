@@ -75,7 +75,7 @@ Option array_is_empty(Array_t err);
 Option array_sub_array(Array_t arr, unsigned from, unsigned to);
 
 typedef void (*ArrayForEach)(void *data);
-/** Executa "fn" on each element of "arr" */
+/** Execute "fn" on each element of "arr" */
 Error array_for_each(Array_t arr, ArrayForEach fn);
 
 // Print "arr"
