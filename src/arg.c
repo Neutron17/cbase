@@ -9,7 +9,7 @@
 struct Arg getArgs(int argc, char *argv[]) {
 	struct Arg ret = { 0 };
 	int choice;
-	while (1) {
+	while (true) {
 		static struct option long_options[] = {
 			/* Use flags like so:
 			{"verbose",	no_argument,	&verbose_flag, 'V'}*/
@@ -53,9 +53,8 @@ struct Arg getArgs(int argc, char *argv[]) {
 	}
 
 	/* Deal with non-option arguments here */
-	if (optind < argc) {
-		while ( optind < argc ) {
-		}
+	while ( optind < argc ) {
+		optind++;
 	}
 	return ret;
 }

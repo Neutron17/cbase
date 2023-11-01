@@ -13,9 +13,9 @@ static bool defaultCmp(void *B, void *a) {
 
 /** pointer to the Nth element of void *M with members of size MSZ 
  * M + (N*MSZ) */
-#define NTH(M, N, MSZ) PTR_ARITH_WARN(M, N*MSZ)
-#define NTH_A(A, N) PTR_ARITH_WARN(A.members, N*A.mem_sz)
-#define NTH_AP(A, N) PTR_ARITH_WARN(A->members, N*A->mem_sz)
+#define NTH(M, N, MSZ) PTR_ARITH_WARN(M, (N)*(MSZ)
+#define NTH_A(A, N) PTR_ARITH_WARN((A).members, (N)*(A).mem_sz)
+#define NTH_AP(A, N) PTR_ARITH_WARN((A)->members, (N)*(A)->mem_sz)
 
 // Option: complex Array_t
 Option _array_init(unsigned mem_sz, unsigned def_sz) {
@@ -50,7 +50,7 @@ Option array_index(Array_t arr, unsigned n) {
 		return ERROR_FAIL;
 	if(n >= arr.used)
 		return Option_WRAP_ERR("n >= arr.used");
-	return Option_WRAP_OK(NTH(arr.members, n, arr.mem_sz));
+	return Option_WRAP_OK(NTH_A(arr, n));
 }
 
 Option array_last(Array_t arr) {
@@ -93,10 +93,10 @@ Error array_add(Array_t *arr, unsigned n, void *data) {
 	void *old = NTH_AP(arr, n);
 	void *new = NTH_AP(arr, n+1);
 
-	memcpy(new,
+	memmove(new,
 		old,
 	      	(arr->used - n)*arr->mem_sz);
-	memcpy(NTH_AP(arr, n), data, arr->mem_sz);
+	memmove(NTH_AP(arr, n), data, arr->mem_sz);
 	arr->used++;
 	return ERROR_SUCC;
 }
@@ -108,7 +108,7 @@ Error array_append(Array_t *dest, Array_t other) {
 		if(array_resize(dest, dest->size + other.used + 2).isErr) 
 			return ERROR_FAIL;
 
-	memcpy(PTR_ARITH_WARN(dest->members, other.used*other.mem_sz),
+	memmove(PTR_ARITH_WARN(dest->members, other.used*other.mem_sz),
 		other.members, 
 		other.used * other.mem_sz);
 	dest->used += other.used;
@@ -134,13 +134,15 @@ Error array_pops(Array_t *arr, unsigned n) {
 Error array_remove(Array_t *arr, unsigned n) {
 	if(!arr->isValid)
 		return ERROR_FAIL;
+	if(n == arr->used)
+		return array_pop(arr);
 
 	void *old = NTH_AP(arr, n);
 	void *new = NTH_AP(arr, n+1);
 
-	memcpy(old,
+	memmove(old,
 		new,
-		(arr->used - n)*arr->mem_sz);
+		(arr->used - n - 1)*arr->mem_sz);
 	arr->used--;
 	return ERROR_SUCC;
 }
