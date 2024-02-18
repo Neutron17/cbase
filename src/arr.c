@@ -120,7 +120,6 @@ Option array_pop(Array_t *arr) {
 	if(!arr->isValid || arr->used == 0)
 		return ERROR_FAIL;
 	Option last = array_last(*arr);
-	printf("a%d\n", *((int *)last.ret));
 	arr->used--;
 	return last;
 }
@@ -145,6 +144,24 @@ Error array_remove(Array_t *arr, unsigned n) {
 		(arr->used - n - 1)*arr->mem_sz);
 	arr->used--;
 	return ERROR_SUCC;
+}
+
+Error array_remove_first(Array_t *arr, ArrayCondIter iter) {
+	for(int i = 0; i < arr->used; i++)
+		if(iter(NTH_AP(arr, i)))
+			return ERROR_SUCC;
+	return ERROR_FAIL;
+}
+
+// Option: int
+Option array_remove_if(Array_t *arr, ArrayCondIter iter) {
+	int count = 0;
+	for(int i = 0; i < arr->used; i++)
+		if(iter(NTH_AP(arr, i)))
+			count++;
+	if(!count)
+		return ERROR_FAIL;
+	return Option_WRAP_OK(count);
 }
 
 Error array_clear(Array_t *arr) { 
