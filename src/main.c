@@ -1,15 +1,12 @@
 #include <aio.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 #include "error.h"
-#include "global.h"
 #include "log.h"
 #include "lt.h"
 #include "exitCodes.h"
-#include "stdext.h"
 #include "arr.h"
 
 #define BUFF_SZ 16
@@ -18,16 +15,15 @@ void printer(void *data) {
 	printf("%d\t", *((int *)data));
 }
 
+__attribute__((noreturn))
+void _defer(int ret) {
+	logdestroy();
+	exit(ret);
+}
+
 int main(int argc, char *argv[]) {
-	init((LT_t) {
-			.handlers = (struct LTHandler[]) { 
-				{
-					(ltfunc_init) loginit, 
-					{ (void *)L_ALL, (void *)L_ALL },
-					(ltfunc_def) logdestroy,
-					NULL
-				} 
-			}, .size = 1});
+	loginit(L_ALL,L_ALL);
+	cleanUp = _defer;
 	LOG(L_INFO, "Hello World");
 
 	Array_t arr;
@@ -49,6 +45,8 @@ int main(int argc, char *argv[]) {
 	printf("%d\n", sub.used);
 	array_for_each(sub, printer);
 	puts("");
+
+	qsort(arr.members, sizeof(int), comp)
 
 	array_destroy(&sub);
 	array_destroy(&arr);

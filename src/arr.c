@@ -58,6 +58,9 @@ Option array_last(Array_t arr) {
 		return Option_WRAP_ERR("array is empty");
 	return array_index(arr, arr.used-1);
 }
+Option array_lastptr(Array_t arr) {
+	return Option_WRAP_OK(NTH_A(arr, arr.used-1));
+}
 
 Error array_resize(Array_t *arr, unsigned nsz) {
 	if(nsz < arr->used)
@@ -124,7 +127,7 @@ Option array_pop(Array_t *arr) {
 	return last;
 }
 Error array_pops(Array_t *arr, unsigned n) {
-	for(int i = 0; i < n; i++)
+	for(unsigned i = 0; i < n; i++)
 		if(array_pop(arr).isErr)
 			return ERROR_FAIL;
 	return ERROR_SUCC;
@@ -133,21 +136,20 @@ Error array_pops(Array_t *arr, unsigned n) {
 Error array_remove(Array_t *arr, unsigned n) {
 	if(!arr->isValid)
 		return ERROR_FAIL;
-	if(n == arr->used)
+	if(n == arr->used - 1)
 		return array_pop(arr);
 
 	void *old = NTH_AP(arr, n);
 	void *new = NTH_AP(arr, n+1);
 
-	memmove(old,
-		new,
+	memmove(old,new,
 		(arr->used - n - 1)*arr->mem_sz);
 	arr->used--;
 	return ERROR_SUCC;
 }
 
 Error array_remove_first(Array_t *arr, ArrayCondIter iter) {
-	for(int i = 0; i < arr->used; i++)
+	for(unsigned i = 0; i < arr->used; i++)
 		if(iter(NTH_AP(arr, i)))
 			return ERROR_SUCC;
 	return ERROR_FAIL;
@@ -156,12 +158,22 @@ Error array_remove_first(Array_t *arr, ArrayCondIter iter) {
 // Option: int
 Option array_remove_if(Array_t *arr, ArrayCondIter iter) {
 	int count = 0;
-	for(int i = 0; i < arr->used; i++)
+	for(unsigned i = 0; i < arr->used; i++)
 		if(iter(NTH_AP(arr, i)))
 			count++;
 	if(!count)
 		return ERROR_FAIL;
 	return Option_WRAP_OK(count);
+}
+
+Error array_null(Array_t *arr, unsigned n) {
+	/*Entity *dest = NTH_AP(arr, n);
+	printf("Nulling %d\n", dest->_moveID);*/
+	if(!arr->isValid)
+		return ERROR_FAIL;
+	
+	memset(NTH_AP(arr, n), 0, arr->mem_sz);
+	return ERROR_SUCC;
 }
 
 Error array_clear(Array_t *arr) { 
@@ -190,14 +202,14 @@ Error array_set(Array_t *arr, unsigned n, void *data) {
 
 // Option: unsigned
 Option array_index_of(Array_t arr, void *data) {
-	for(int i = 0; i < arr.used; i++)
+	for(unsigned i = 0; i < arr.used; i++)
 		if(arr.cmp(NTH_A(arr, i), data))
 			return Option_WRAP_OK(i);
 	return Option_WRAP_ERR("data not found");
 }
 // Option: bool
 Option array_contains(Array_t arr, void *data) {
-	for(int i = 0; i < arr.used; i++)
+	for(unsigned i = 0; i < arr.used; i++)
 		if(arr.cmp(NTH_A(arr, i), data))
 			return Option_WRAP_OK(1);
 	return Option_WRAP_ERR("data not found");
@@ -212,7 +224,7 @@ Option array_is_empty(Array_t arr) {
 Option array_sub_array(Array_t arr, unsigned from, unsigned to) {
 	if(!arr.isValid || to < from || to >= arr.used)
 		return ERROR_FAIL;
-	const int len = to - (from - 1);
+	const unsigned len = to - (from - 1);
 	Option opt = _array_init(arr.mem_sz, len);
 	Array_t ret;
 	if(opt.isErr) 
@@ -220,7 +232,7 @@ Option array_sub_array(Array_t arr, unsigned from, unsigned to) {
 	else
 		UNWRAP_TO_COMPLEX_(opt, &ret, Array_t);
 
-	for(int i = 0; i < len; i++)
+	for(unsigned i = 0; i < len; i++)
 		unwrap(array_push(&ret, unwrap(array_get(arr, from+i-1))));
 	return Option_COMPLEX_WRAP_OK(&ret, Array_t);
 }
@@ -228,14 +240,14 @@ Option array_sub_array(Array_t arr, unsigned from, unsigned to) {
 Error array_for_each(Array_t arr, ArrayForEach fn) {
 	if(!arr.isValid)
 		return ERROR_FAIL;
-	for(int i = 0; i < arr.used; i++)
+	for(unsigned i = 0; i < arr.used; i++)
 		fn(NTH_A(arr, i));
 	return ERROR_SUCC;
 }
 
 void array_print(Array_t arr) {
 	printf("(Array_t(mem_sz=%d, size=%d, used=%d)) [", arr.mem_sz, arr.size, arr.used);
-	for(int i = 0; i < arr.used; i++) {
+	for(unsigned i = 0; i < arr.used; i++) {
 		printf("%u", *(unsigned *)NTH_A(arr, i));
 		if(i != arr.used-1)
 			printf(", ");

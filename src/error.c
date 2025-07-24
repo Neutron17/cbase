@@ -15,17 +15,17 @@ void _unwrap_err(Option ret, const char *restrict file, unsigned line, const cha
 		LOGF(L_ERR, "UNWRAP ERROR: %s, from %s/%s, line: %s\n", ret.msg, file, func, line);
 }
 
-// WARNING: if is actuall(not Error) Option -> needs to be freed
+// WARNING: if is actual(not Error) Option -> needs to be freed
 void *_unwrap(Option ret, const char *restrict file, unsigned line, const char *restrict func) {
-	unwrap_err(ret);
+	_unwrap_err(ret, file, line, func);
 	if(!ret.isntOpt) // is opt
 		return ret.ret;
 	return NULL;
 }
 
-// WARNING: if is actuall(not Error) Option -> needs to be freed
+// WARNING: if is actual(not Error) Option -> needs to be freed
 void *_except(Option ret, const char *msg, const char *restrict file, unsigned line, const char *restrict func) {
-	unwrap_err(ret);
+	_unwrap_err(ret, file, line, func);
 	if(!ret.isntOpt) // is opt
 		return ret.ret;
 	return NULL;

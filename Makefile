@@ -12,6 +12,11 @@ INCFLAGS  = -Isrc/
 CCFLAGS += $(INCFLAGS)
 CCFLAGS += -O0
 CCFLAGS += -Wall
+CCFLAGS += -Wextra
+CCFLAGS += -Werror
+CCFLAGS += -Wno-error=padded
+CCFLAGS += -Wno-error=unused-parameter
+CCFLAGS += -Wpadded
 CCFLAGS += -pedantic
 
 LDFLAGS  = $(INCFLAGS)
