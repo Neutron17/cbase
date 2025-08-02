@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "alloc.h"
 #include "error.h"
 #include "log.h"
 #include "lt.h"
@@ -27,10 +28,10 @@ int main(int argc, char *argv[]) {
 	LOG(L_INFO, "Hello World");
 
 	Array_t arr;
-	UNWRAP_TO_COMPLEX(array_init(int, 10), arr, Array_t);
+	UNWRAP_TO_COMPLEX_FN(array_init(arenaInit(20*4), int, 10), arr, Array_t);
 	int b = 1;
 	for(int i = 0; i < 20; i++) {
-		unwrap(array_add(&arr, 0, &b));
+		unwrap(array_add(&arr, 0, b));
 		array_print(arr);
 		b++;
 	}
@@ -38,15 +39,13 @@ int main(int argc, char *argv[]) {
 	//array_for_each(arr, printer);
 	//puts("");
 	array_print(arr);
-	UNWRAP_TO_COMPLEX(array_sub_array(arr, 5, 10), sub, Array_t);
+	UNWRAP_TO_COMPLEX_FN(array_sub_array(pageAllocator(),arr, 5, 10), sub, Array_t);
 
 	array_for_each(arr, printer);
 	puts("");
-	printf("%d\n", sub.used);
+	printf("%lu\n", sub.used);
 	array_for_each(sub, printer);
 	puts("");
-
-	qsort(arr.members, sizeof(int), comp)
 
 	array_destroy(&sub);
 	array_destroy(&arr);

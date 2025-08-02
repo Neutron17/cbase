@@ -16,8 +16,11 @@ CCFLAGS += -Wextra
 CCFLAGS += -Werror
 CCFLAGS += -Wno-error=padded
 CCFLAGS += -Wno-error=unused-parameter
+CCFLAGS += -Wno-error=incompatible-pointer-types
 CCFLAGS += -Wpadded
 CCFLAGS += -pedantic
+CCFLAGS += -fanalyzer
+CCFLAGS += -fno-omit-frame-pointer
 
 LDFLAGS  = $(INCFLAGS)
 LDFLAGS += -lpthread

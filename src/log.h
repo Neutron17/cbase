@@ -26,7 +26,13 @@ void __logf(enum LogLevel level, const char *file,
 #ifndef NO_FUNC
 		const char *func,
 #endif
-		int line, const char *format, ...);
+		int line, const char *format, ...) 
+#ifndef NO_FUNC
+	__attribute__ ((format (printf, 5, 6)));
+#else
+	__attribute__ ((format (printf, 4, 5)));
+#endif
+
 void __log(enum LogLevel level, const char *file,
 #ifndef NO_FUNC
 		const char *func,
