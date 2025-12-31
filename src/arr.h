@@ -58,6 +58,8 @@ Error array_push_ptr(Array_t *restrict arr, const void *restrict data);
 // Add element to be the nth element to the array
 Error array_add_ptr(Array_t *arr, size_t n, void *data);
 #define array_add(A,N,V) (__extension__ ({__typeof__(V) __arr_add_tmp = (V);array_add_ptr((A),(N),&__arr_add_tmp); }))
+#define array_insert array_add
+#define array_insert_ptr array_add_ptr
 // Append "other" to the end of "dest"
 Error array_append(Array_t *dest, Array_t other);
 Error array_append_simple(Array_t *dest, void *other, size_t count);
@@ -70,6 +72,8 @@ Option array_pop(Array_t *arr);
 Error array_pops(Array_t *arr, size_t n);
 /** Remove the "n"th element of "arr" */
 Error array_remove(Array_t *arr, size_t n);
+/** Remove the "n"th element of "arr" by overwriting it with the last */
+Error array_remove_swapback(Array_t *arr, unsigned n);
 /** Remove the first element for which "iter" returns true */
 Error array_remove_first(Array_t *arr, ArrayCondIter iter);
 /**[Option int]

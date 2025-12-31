@@ -158,6 +158,16 @@ Error array_remove(Array_t *arr, size_t n) {
 	return ERROR_SUCC;
 }
 
+Error array_remove_swapback(Array_t *arr, unsigned n) {
+	if(n == arr->used - 1) {
+		array_pop(arr);
+        return ERROR_SUCC;
+    }
+	memcpy(NTH_AP(arr, n), NTH_AP(arr, n), arr->mem_sz);
+	arr->used--;
+	return ERROR_SUCC;
+}
+
 Error array_remove_first(Array_t *arr, ArrayCondIter iter) {
 	for(size_t i = 0; i < arr->used; i++)
 		if(iter(NTH_AP(arr, i)))

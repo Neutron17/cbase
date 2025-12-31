@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 	UNWRAP_TO_COMPLEX_FN(array_init(arenaInit(20*4), int, 10), arr, Array_t);
 	int b = 1;
 	for(int i = 0; i < 20; i++) {
-		unwrap(array_add(&arr, 0, b));
+		array_add(&arr, 0, b);
 		array_print(arr);
 		b++;
 	}
